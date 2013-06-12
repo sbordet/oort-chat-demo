@@ -1,0 +1,9 @@
+[{
+    "class": "org.cometd.demo.model.RoomInfo",
+    "id": 0,
+    "name": "Main Room",
+    "membership": {
+        "class": "org.cometd.demo.model.Membership",
+        "value": "BRONZE"
+    }
+}]

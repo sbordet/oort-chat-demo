@@ -1,0 +1,177 @@
+/*
+ * Copyright (c) 2013 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+img
+{
+    margin: 0;
+    border: 0;
+}
+
+table
+{
+    border: 1px solid navy;
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+td
+{
+    border: 1px solid navy;
+    text-align: center;
+    vertical-align: top;
+}
+
+input
+{
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+#title
+{
+    text-align: center;
+}
+
+#console
+{
+    margin: auto;
+    width: 80em;
+}
+
+#rooms-box
+{
+    width: 15em;
+}
+
+#rooms-header-box
+{
+    width: 10em;
+    text-align: right;
+}
+#rooms-header
+{
+}
+#rooms-header img
+{
+    width: 1em;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+#rooms-list-box
+{
+    height: 100%;
+    text-align: left;
+}
+#rooms-list .selected
+{
+    background-color: lightgreen;
+}
+#rooms-list span
+{
+    padding: 0 0.2em;
+    width: 100%;
+}
+#rooms-list img
+{
+    width: 1em;
+    cursor: pointer;
+}
+
+#chat-header-box
+{
+    height: 1.2em;
+}
+
+#room-name input
+{
+    width: 20em;
+}
+#room-name img
+{
+    width: 1em;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+#chat-history
+{
+    text-align: left;
+    width: 55em;
+    height: 20em;
+    overflow: auto;
+}
+#chat-history .author
+{
+    font-weight: bold;
+}
+
+#user-box
+{
+    vertical-align: middle;
+}
+#chat-message-box
+{
+    height: 1.2em;
+}
+#chat-text-box
+{
+    width: 100%;
+    padding: 0 0.4em;
+    vertical-align: middle;
+}
+
+#message, #logon
+{
+    height: 1em;
+}
+
+#user-label-box
+{
+    vertical-align: middle;
+}
+#user-input-box
+{
+    width: 100%;
+    padding: 0 0.4em;
+    vertical-align: middle;
+}
+
+#members-box
+{
+    width: 10em;
+}
+#members
+{
+}
+#status-box
+{
+    height: 1.2em;
+    text-align: left;
+}
+#status-box
+{
+    height: 1em;
+}
+#user-count
+{
+    border-left: 2px solid navy;
+    padding: 0 0.5em;
+    text-align: right;
+    float: right;
+}
