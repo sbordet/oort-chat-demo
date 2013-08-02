@@ -151,7 +151,7 @@ public class RoomMembersService implements BayeuxServer.SessionListener
         OortList<UserInfo> roomMembers = new OortList<>(oort, name, OortObjectFactories.<UserInfo>forConcurrentList());
         if (roomToMembers.putIfAbsent(roomInfo, roomMembers) == null)
         {
-            oort.getBayeuxServer().createIfAbsent(getChannel(roomInfo), new ConfigurableServerChannel.Initializer.Persistent());
+            oort.getBayeuxServer().createChannelIfAbsent(getChannel(roomInfo), new ConfigurableServerChannel.Initializer.Persistent());
             startMembers(roomMembers);
             logger.debug("Constructed room members for {}", roomInfo);
         }

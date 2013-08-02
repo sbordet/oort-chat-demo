@@ -46,6 +46,7 @@ import org.cometd.oort.OortMap;
 import org.cometd.oort.OortObject;
 import org.cometd.oort.OortObjectFactories;
 import org.cometd.oort.OortObjectMergers;
+import org.cometd.oort.OortStringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +83,7 @@ import org.slf4j.LoggerFactory;
  * {@link RoomMembersService} implements the latter solution.
  */
 @Service(RoomsService.NAME)
-public class RoomsService implements BayeuxServer.SessionListener, OortMap.EntryListener<RoomInfo>
+public class RoomsService implements BayeuxServer.SessionListener, OortMap.EntryListener<String, RoomInfo>
 {
     public static final String NAME = "rooms";
     private static final String CHANNEL = "/rooms";
@@ -94,7 +95,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     private final RoomMembersService membersService;
     @Session
     private LocalSession session;
-    private OortMap<RoomInfo> roomInfos;
+    private OortStringMap<RoomInfo> roomInfos;
 
     public RoomsService(Oort oort, Node node, UsersService usersService, RoomMembersService membersService)
     {
@@ -113,7 +114,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     @PostConstruct
     private void construct() throws Exception
     {
-        roomInfos = new OortMap<>(oort, NAME, OortObjectFactories.<String, RoomInfo>forConcurrentMap());
+        roomInfos = new OortStringMap<>(oort, NAME, OortObjectFactories.<String, RoomInfo>forConcurrentMap());
         roomInfos.start();
         roomInfos.addListener(new OortMap.DeltaListener<>(roomInfos));
         roomInfos.addEntryListener(this);
@@ -173,7 +174,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     }
 
     @Override
-    public void onPut(OortObject.Info<ConcurrentMap<String, RoomInfo>> info, OortMap.Entry<RoomInfo> entry)
+    public void onPut(OortObject.Info<ConcurrentMap<String, RoomInfo>> info, OortMap.Entry<String, RoomInfo> entry)
     {
         // Update rooms members
         membersService.roomAdded(entry.getNewValue());
@@ -183,7 +184,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     }
 
     @Override
-    public void onRemoved(OortObject.Info<ConcurrentMap<String, RoomInfo>> info, OortMap.Entry<RoomInfo> entry)
+    public void onRemoved(OortObject.Info<ConcurrentMap<String, RoomInfo>> info, OortMap.Entry<String, RoomInfo> entry)
     {
         // Update rooms members
         membersService.roomRemoved(entry.getOldValue());

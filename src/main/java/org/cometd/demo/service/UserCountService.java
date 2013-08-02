@@ -63,7 +63,7 @@ public class UserCountService implements BayeuxServer.SessionListener
         Oort oort = counter.getOort();
         BayeuxServer bayeuxServer = oort.getBayeuxServer();
         bayeuxServer.addListener(this);
-        bayeuxServer.createIfAbsent(CHANNEL, new ConfigurableServerChannel.Initializer.Persistent());
+        bayeuxServer.createChannelIfAbsent(CHANNEL, new ConfigurableServerChannel.Initializer.Persistent());
         oort.observeChannel(CHANNEL);
     }
 

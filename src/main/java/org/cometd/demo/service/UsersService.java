@@ -27,6 +27,7 @@ import org.cometd.bayeux.server.ServerSession;
 import org.cometd.demo.model.UserInfo;
 import org.cometd.oort.OortMap;
 import org.cometd.oort.OortObjectFactories;
+import org.cometd.oort.OortStringMap;
 import org.cometd.oort.Seti;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class UsersService implements BayeuxServer.SessionListener
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ConcurrentMap<String, ServerSession> userToSession = new ConcurrentHashMap<>();
     private final Seti seti;
-    private OortMap<UserInfo> userInfos;
+    private OortStringMap<UserInfo> userInfos;
 
     public UsersService(Seti seti)
     {
@@ -59,7 +60,7 @@ public class UsersService implements BayeuxServer.SessionListener
     @PostConstruct
     public void construct() throws Exception
     {
-        userInfos = new OortMap<>(seti.getOort(), NAME, OortObjectFactories.<String, UserInfo>forConcurrentMap());
+        userInfos = new OortStringMap<>(seti.getOort(), NAME, OortObjectFactories.<String, UserInfo>forConcurrentMap());
         userInfos.start();
         seti.getOort().getBayeuxServer().addListener(this);
     }
