@@ -1,7 +1,7 @@
 ## Distributed Oort Chat Demo ##
 
 This is an implementation of a chat application distributed over multiple nodes based on [CometD](http://cometd.org)
-2.7.0 and its [clustering functionalities](http://docs.cometd.org/reference/#java_oort).
+2.7.0 and its [clustering functionalities](http://docs.cometd.org/reference/java_oort.html).
 
 It is a showcase for the new clustering functionalities added in CometD 2.7.0: `OortObject` (and subclasses)
 and `OortService` (and subclasses).
