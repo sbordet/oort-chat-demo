@@ -113,6 +113,6 @@ public class UserCountService implements BayeuxServer.SessionListener
     {
         long result = counter.sum();
         logger.debug("Broadcasting user count {}", result);
-        counter.getOort().getBayeuxServer().getChannel(CHANNEL).publish(counter.getLocalSession(), result, null);
+        counter.getOort().getBayeuxServer().getChannel(CHANNEL).publish(counter.getLocalSession(), result);
     }
 }

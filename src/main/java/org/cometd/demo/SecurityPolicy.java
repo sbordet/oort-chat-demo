@@ -59,6 +59,7 @@ public class SecurityPolicy extends DefaultSecurityPolicy
         Map<String,Object> ext = message.getExt();
         if (ext != null)
         {
+            @SuppressWarnings("unchecked")
             Map<String, Object> authentication = (Map<String, Object>)ext.get("auth");
             if (authentication != null)
             {

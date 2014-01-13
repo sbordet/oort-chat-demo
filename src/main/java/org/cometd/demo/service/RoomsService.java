@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
  *     have each {@link RoomsService} register itself as an {@link OortMap.EntryListener}, so that
  *     room list changes are broadcast across nodes via {@link OortMap} features, and then have
  *     each node broadcast the whole room list to locally connected users via a standard
- *     {@link ServerChannel#publish(org.cometd.bayeux.Session, Object, String)}
+ *     {@link ServerChannel#publish(org.cometd.bayeux.Session, Object)}
  * </li>
  * <li>
  *     have each {@link RoomsService} broadcast, upon changes, the whole room list across nodes
@@ -208,7 +208,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     {
         Collection<RoomInfo> rooms = roomInfos.merge(OortObjectMergers.<String, RoomInfo>concurrentMapUnion()).values();
         logger.debug("Broadcasting rooms {}", rooms);
-        oort.getBayeuxServer().getChannel(CHANNEL).publish(session, rooms, null);
+        oort.getBayeuxServer().getChannel(CHANNEL).publish(session, rooms);
     }
 
     @SuppressWarnings("unchecked")

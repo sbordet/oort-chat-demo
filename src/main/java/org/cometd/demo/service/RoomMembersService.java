@@ -203,7 +203,7 @@ public class RoomMembersService implements BayeuxServer.SessionListener
         Map<String, Object> data = new HashMap<>(2);
         data.put("action", action);
         data.put("members", Arrays.asList(userInfo));
-        oort.getBayeuxServer().getChannel(getChannel(roomInfo)).publish(session, data, null);
+        oort.getBayeuxServer().getChannel(getChannel(roomInfo)).publish(session, data);
     }
 
     public void deliverMembers(ServerSession session, UserInfo userInfo, RoomInfo roomInfo)

@@ -94,7 +94,7 @@ public class ChatService
         ChatInfo chatInfo = new ChatInfo(userInfo, newText);
         long roomId = ((Number)data.get(ROOM_ID)).longValue();
         String channelName = "/chat/" + roomId;
-        oort.getBayeuxServer().getChannel(channelName).publish(session, chatInfo, null);
+        oort.getBayeuxServer().getChannel(channelName).publish(session, chatInfo);
 
         // Store the chat history
         RoomInfo roomInfo = roomsService.findRoomInfo(roomId);
