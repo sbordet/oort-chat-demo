@@ -1,9 +1,9 @@
 ## Distributed Oort Chat Demo ##
 
 This is an implementation of a chat application distributed over multiple nodes based on [CometD](http://cometd.org)
-2.7.0 and its [clustering functionalities](http://docs.cometd.org/reference/java_oort.html).
+2.8.0 and its [clustering functionalities](http://docs.cometd.org/reference/java_oort.html).
 
-It is a showcase for the new clustering functionalities added in CometD 2.7.0: `OortObject` (and subclasses)
+It is a showcase for the new clustering functionalities added since CometD 2.7.0: `OortObject` (and subclasses)
 and `OortService` (and subclasses).
 
 ### Building & Running the Demo ###
@@ -17,7 +17,7 @@ using the Maven Jetty Plugin in this way:
 This will start the profile "A", which starts the first node on port 8080, called node "A".
 You don't need to build the demo first, as the Jetty Maven Plugin does this already.
 
-You can start the second node in this way (on another terminal window):
+Wait until the first node is fully started, then you can start the second node in this way (on another terminal window):
 
     $ cd $DEMO
     $ mvn jetty:run -PB
