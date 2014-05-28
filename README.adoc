@@ -1,12 +1,12 @@
-## Distributed Oort Chat Demo ##
+== Distributed Oort Chat Demo
 
-This is an implementation of a chat application distributed over multiple nodes based on [CometD](http://cometd.org)
-2.8.0 and its [clustering functionalities](http://docs.cometd.org/reference/java_oort.html).
+This is an implementation of a chat application distributed over multiple nodes based on http://cometd.org[CometD]
+3.0.0 and its http://docs.cometd.org/reference/java_oort.html[clustering functionalities].
 
 It is a showcase for the new clustering functionalities added since CometD 2.7.0: `OortObject` (and subclasses)
 and `OortService` (and subclasses).
 
-### Building & Running the Demo ###
+=== Building & Running the Demo
 
 Assuming the project root directory is the $DEMO directory, the code can be easily run in multiple nodes
 using the Maven Jetty Plugin in this way:
@@ -27,7 +27,7 @@ This will start the profile "B", which starts the second node on port 9090, call
 Now you can hit the two nodes with two browsers, one pointing at http://localhost:8080 and the other
 pointing to http://localhost:9090.
 
-### Code Overview ###
+=== Code Overview
 
 The "entry point" is `StartupServlet` where the various services are created and configured.
 In particular, `StartupServlet` also loads the id of the current node, specified in `web.xml`
@@ -38,7 +38,7 @@ For example, each node loads a file that contains chat rooms that must exist at 
 
 Each service performs exactly one task.
 
-#### `UsersService` ####
+==== `UsersService`
 
 This service is responsible for creating a `UserInfo` instance every time a user logs in, and delete that
 instance when the user logs out or expires.
@@ -50,7 +50,7 @@ with its `UserInfo` instance. In this way, every node has the `UserInfo` about a
 When user A1 logs in in nodeA, `UsersService` creates a `UserInfo`, puts it into the `OortMap` which replicates
 it to other nodes. Likewise, when user B1 logs in in nodeB `UsersService` replicates its `UserInfo` to nodeA.
 
-#### `RoomsService` ####
+==== `RoomsService`
 
 This service is responsible for maintaining the list of chat rooms, so users can choose which room they want
 to join.
@@ -72,7 +72,7 @@ Likewise, they receive a "remove event" when a room is deleted.
 When these events are received by `RoomService`, it calls the `RoomMembersService` to create/destroy a member
 list for that room on the current node.
 
-#### `RoomMembersService` ####
+==== `RoomMembersService`
 
 This service is responsible for maintaining the room members list updated for each room.
 It is composed of a `ConcurrentMap<RoomInfo, OortList<UserInfo>>`, so a non-distributed map with `OortList`
@@ -88,7 +88,7 @@ the rooms it joined.
 For any change in the members list of a room, this service broadcasts a message across the cluster that is
 delivered to remote clients via standard Oort features.
 
-#### `RoomJoinService` & `RoomLeaveService` ####
+==== `RoomJoinService` & `RoomLeaveService`
 
 These services are responsible for join/leave a user to/from a room.
 They listen for messages from remote clients and perform the action.
@@ -104,7 +104,7 @@ so that the room's member list can be kept up to date.
 This check can be done locally because both `RoomInfo` and `UserInfo` carry the information
 needed to perform the check.
 
-#### `RoomCreateService` ####
+==== `RoomCreateService`
 
 This service is responsible for creating new rooms at runtime upon user demand.
 In order to create a room, a unique across the cluster id must be generated.
@@ -112,7 +112,7 @@ In order to create a room, a unique across the cluster id must be generated.
 sent back to the node that wants to create the room, this service creates the new `RoomInfo` and passes
 it to the `RoomsService` to distribute the new `RoomInfo` across all nodes.
 
-#### `ChatService` ####
+==== `ChatService`
 
 This service is responsible for handling chat messages from remote clients, and re-broadcast them to all
 nodes, possibly after text modifications or other actions (like warning a user for bad wording in messages).
@@ -121,7 +121,7 @@ Chat messages are re-broadcast across all nodes using standard Oort features.
 
 Every chat message is archived with the help of the `ChatHistoryArchiveService`.
 
-#### `ChatHistoryService`, `ChatHistoryArchiveService` & `ChatHistoryRequestService` ####
+==== `ChatHistoryService`, `ChatHistoryArchiveService` & `ChatHistoryRequestService`
 
 These services work together to provide a storage for chat messages for every room.
 
