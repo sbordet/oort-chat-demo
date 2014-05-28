@@ -17,25 +17,26 @@
 
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
 
     <servlet>
         <servlet-name>cometd</servlet-name>
-        <servlet-class>org.cometd.annotation.AnnotationCometdServlet</servlet-class>
+        <servlet-class>org.cometd.annotation.AnnotationCometDServlet</servlet-class>
+        <init-param>
+            <param-name>cometdURLMapping</param-name>
+            <param-value>/cometd/*</param-value>
+        </init-param>
         <init-param>
             <param-name>timeout</param-name>
             <param-value>10000</param-value>
-        </init-param>
-        <init-param>
-            <param-name>transports</param-name>
-            <param-value>org.cometd.websocket.server.WebSocketTransport</param-value>
         </init-param>
         <init-param>
             <param-name>jsonContext</param-name>
             <param-value>org.cometd.demo.JSONContextServer</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>
     <servlet-mapping>
         <servlet-name>cometd</servlet-name>
@@ -69,11 +70,11 @@
     <servlet>
         <servlet-name>startup</servlet-name>
         <servlet-class>org.cometd.demo.StartupServlet</servlet-class>
-        <load-on-startup>10</load-on-startup>
         <init-param>
             <param-name>node</param-name>
             <param-value>${node}</param-value>
         </init-param>
+        <load-on-startup>10</load-on-startup>
     </servlet>
 
 </web-app>

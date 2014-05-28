@@ -69,7 +69,7 @@ public class RoomLeaveService
                 membersService.leave(roomInfo, userInfo);
                 logger.debug("Leave room request succeeded");
                 logger.debug("Delivering room to {}: {}", userInfo, roomInfo);
-                remote.deliver(session, message.getChannel(), roomInfo, null);
+                remote.deliver(session, message.getChannel(), roomInfo);
             }
             else
             {
@@ -84,6 +84,6 @@ public class RoomLeaveService
 
     private void leaveFailed(ServerSession remote, String message)
     {
-        remote.deliver(session, "/service/status", message, null);
+        remote.deliver(session, "/service/status", message);
     }
 }

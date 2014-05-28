@@ -84,7 +84,7 @@ public class ChatHistoryRequestService extends OortService<ChatHistoryInfo, Oort
         if (userInfo != null)
         {
             logger.debug("Delivering chat history to {}: {}", userInfo, result);
-            remote.deliver(getLocalSession(), "/service/chat", result, null);
+            remote.deliver(getLocalSession(), "/service/chat", result);
         }
     }
 

@@ -142,7 +142,7 @@ public class RoomEditService extends OortService<RoomInfo, OortService.ServerCon
         ServerSession session = context.getServerSession();
         UserInfo userInfo = usersService.getUserInfo(session);
         logger.debug("Delivering room to {}: {}", userInfo, roomInfo);
-        session.deliver(getLocalSession(), context.getServerMessage().getChannel(), roomInfo, null);
+        session.deliver(getLocalSession(), context.getServerMessage().getChannel(), roomInfo);
     }
 
     @Override
@@ -153,6 +153,6 @@ public class RoomEditService extends OortService<RoomInfo, OortService.ServerCon
 
     private void editFailed(ServerSession remote, String message)
     {
-        remote.deliver(getLocalSession(), "/service/status", message, null);
+        remote.deliver(getLocalSession(), "/service/status", message);
     }
 }

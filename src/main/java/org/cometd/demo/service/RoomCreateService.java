@@ -101,13 +101,13 @@ public class RoomCreateService
                 RoomInfo roomInfo = new RoomInfo(result, roomName, Membership.BRONZE);
                 logger.debug("Creating room {}", roomInfo);
                 roomsService.createRoomInfo(roomInfo);
-                remote.deliver(session, message.getChannel(), roomInfo, null);
+                remote.deliver(session, message.getChannel(), roomInfo);
             }
 
             @Override
             public void failed(Object failure)
             {
-                remote.deliver(session, "/service/status", String.valueOf(failure), null);
+                remote.deliver(session, "/service/status", String.valueOf(failure));
             }
         });
     }

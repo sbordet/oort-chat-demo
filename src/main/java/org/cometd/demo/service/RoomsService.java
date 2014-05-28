@@ -37,6 +37,7 @@ import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ConfigurableServerChannel;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
+import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.demo.Node;
 import org.cometd.demo.model.RoomInfo;
@@ -162,7 +163,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     }
 
     @Override
-    public void sessionAdded(ServerSession remote)
+    public void sessionAdded(ServerSession remote, ServerMessage message)
     {
         // New user, deliver rooms
         deliverRooms(remote);
@@ -200,7 +201,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
         {
             Collection<RoomInfo> rooms = roomInfos.merge(OortObjectMergers.<String, RoomInfo>concurrentMapUnion()).values();
             logger.debug("Delivering rooms to user '{}': {}", userInfo.getId(), rooms);
-            remote.deliver(session, CHANNEL, rooms, null);
+            remote.deliver(session, CHANNEL, rooms);
         }
     }
 

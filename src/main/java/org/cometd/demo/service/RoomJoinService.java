@@ -90,7 +90,7 @@ public class RoomJoinService
                     {
                         logger.debug("Join room request succeeded");
                         logger.debug("Delivering room to {}: {}", userInfo, roomInfo);
-                        remote.deliver(session, message.getChannel(), roomInfo, null);
+                        remote.deliver(session, message.getChannel(), roomInfo);
                         membersService.deliverMembers(remote, userInfo, roomInfo);
                         historyService.deliverChatHistory(remote, roomInfo);
                     }
@@ -117,6 +117,6 @@ public class RoomJoinService
 
     private void joinFailed(ServerSession remote, String message)
     {
-        remote.deliver(session, "/service/status", message, null);
+        remote.deliver(session, "/service/status", message);
     }
 }

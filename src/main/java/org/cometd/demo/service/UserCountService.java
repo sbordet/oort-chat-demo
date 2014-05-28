@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory;
  * {@link UserCountService} register itself as a {@link BayeuxServer.SessionListener} to be
  * notified when users disconnect.
  * It relies on a message sent by each remote user upon successful login to increase the user
- * count, instead of {@link #sessionAdded(ServerSession)}, because the session added event
- * is fired too early (see comments there).
+ * count, instead of {@link #sessionAdded(ServerSession,ServerMessage)}, because the session
+ * added event is fired too early (see comments there).
  */
 @Service(UserCountService.NAME)
 public class UserCountService implements BayeuxServer.SessionListener
@@ -79,7 +79,7 @@ public class UserCountService implements BayeuxServer.SessionListener
     }
 
     @Override
-    public void sessionAdded(ServerSession session)
+    public void sessionAdded(ServerSession session, ServerMessage message)
     {
         // Connections from other Oort nodes will trigger this callback and
         // cannot be distinguished from remote user sessions.

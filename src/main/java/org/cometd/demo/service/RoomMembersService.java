@@ -30,6 +30,7 @@ import org.cometd.annotation.Session;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ConfigurableServerChannel;
 import org.cometd.bayeux.server.LocalSession;
+import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.demo.model.RoomInfo;
 import org.cometd.demo.model.UserInfo;
@@ -94,7 +95,7 @@ public class RoomMembersService implements BayeuxServer.SessionListener
     }
 
     @Override
-    public void sessionAdded(ServerSession session)
+    public void sessionAdded(ServerSession session, ServerMessage message)
     {
         // Nothing to do
     }
@@ -216,7 +217,7 @@ public class RoomMembersService implements BayeuxServer.SessionListener
             Map<String, Object> data = new HashMap<>(2);
             data.put("action", "join");
             data.put("members", members);
-            session.deliver(this.session, getChannel(roomInfo), data, null);
+            session.deliver(this.session, getChannel(roomInfo), data);
         }
     }
 

@@ -23,6 +23,7 @@ import javax.annotation.PreDestroy;
 
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.demo.model.UserInfo;
 import org.cometd.oort.OortMap;
@@ -72,7 +73,8 @@ public class UsersService implements BayeuxServer.SessionListener
         userInfos.stop();
     }
 
-    public void sessionAdded(ServerSession session)
+    @Override
+    public void sessionAdded(ServerSession session, ServerMessage message)
     {
         UserInfo userInfo = (UserInfo)session.getAttribute(USER_INFO);
         if (userInfo != null)
@@ -90,6 +92,7 @@ public class UsersService implements BayeuxServer.SessionListener
         }
     }
 
+    @Override
     public void sessionRemoved(ServerSession session, boolean expired)
     {
         UserInfo userInfo = (UserInfo)session.getAttribute(USER_INFO);

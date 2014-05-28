@@ -17,7 +17,7 @@
 require({
         baseUrl: 'jquery',
         paths: {
-            jquery: 'jquery-1.11.0',
+            jquery: 'jquery-2.1.1',
             org: '../org'
         }
     },
