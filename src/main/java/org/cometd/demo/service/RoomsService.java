@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -180,6 +181,8 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     {
         // Update rooms members
         membersService.roomAdded(entry.getNewValue());
+        if (!info.isLocal())
+            broadcastRooms();
     }
 
     @Override
@@ -187,6 +190,8 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     {
         // Update rooms members
         membersService.roomRemoved(entry.getOldValue());
+        if (!info.isLocal())
+            broadcastRooms();
     }
 
     private void deliverRooms(ServerSession remote)
