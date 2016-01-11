@@ -145,6 +145,8 @@ require({
                 $('#message').hide();
                 $('#rooms-list').empty();
                 $('#members').empty();
+                $('#chat-history').empty();
+                $('#status').empty();
                 $('#logon').show();
                 $('#user-input').val('').focus();
             };
@@ -387,6 +389,7 @@ require({
                 {
                     $('#room-name').text('');
                     $('#members').empty();
+                    $('#chat-history').empty();
                     $('#status').text('Left room \'' + room.name + '\'');
                     _room = undefined;
                 }
