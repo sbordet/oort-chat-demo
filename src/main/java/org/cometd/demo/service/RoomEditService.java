@@ -143,6 +143,7 @@ public class RoomEditService extends OortService<RoomInfo, OortService.ServerCon
         UserInfo userInfo = usersService.getUserInfo(session);
         logger.debug("Delivering room to {}: {}", userInfo, roomInfo);
         session.deliver(getLocalSession(), context.getServerMessage().getChannel(), roomInfo);
+        roomsService.broadcastRooms();
     }
 
     @Override

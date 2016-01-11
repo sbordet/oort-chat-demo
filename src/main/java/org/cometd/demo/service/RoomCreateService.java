@@ -102,6 +102,7 @@ public class RoomCreateService
                 logger.debug("Creating room {}", roomInfo);
                 roomsService.createRoomInfo(roomInfo);
                 remote.deliver(session, message.getChannel(), roomInfo);
+                roomsService.broadcastRooms();
             }
 
             @Override

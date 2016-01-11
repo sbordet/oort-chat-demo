@@ -121,9 +121,10 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
         roomInfos.addEntryListener(this);
 
         List<RoomInfo> chatRooms = loadRooms();
+        logger.debug("Sharing Rooms: {}", chatRooms);
         for (RoomInfo roomInfo : chatRooms)
             roomInfos.putAndShare(String.valueOf(roomInfo.getId()), roomInfo);
-        logger.debug("Sharing Rooms: {}", chatRooms);
+        broadcastRooms();
 
         oort.getBayeuxServer().addListener(this);
     }
@@ -179,9 +180,6 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     {
         // Update rooms members
         membersService.roomAdded(entry.getNewValue());
-
-        // Broadcast rooms changed in some node
-        broadcastRooms();
     }
 
     @Override
@@ -189,9 +187,6 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     {
         // Update rooms members
         membersService.roomRemoved(entry.getOldValue());
-
-        // Broadcast rooms changed in some node
-        broadcastRooms();
     }
 
     private void deliverRooms(ServerSession remote)
@@ -205,7 +200,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
         }
     }
 
-    private void broadcastRooms()
+    protected void broadcastRooms()
     {
         Collection<RoomInfo> rooms = roomInfos.merge(OortObjectMergers.<String, RoomInfo>concurrentMapUnion()).values();
         logger.debug("Broadcasting rooms {}", rooms);
