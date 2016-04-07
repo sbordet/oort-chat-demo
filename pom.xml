@@ -42,7 +42,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jetty-version>9.2.14.v20151106</jetty-version>
-        <cometd-version>3.0.9-SNAPSHOT</cometd-version>
+        <cometd-version>3.0.9</cometd-version>
         <slf4j-version>1.7.13</slf4j-version>
         <oort-url>http://localhost:${port}/cometd</oort-url>
     </properties>
@@ -77,6 +77,7 @@
                             <resourceBase>src/main/webapp</resourceBase>
                         </resourceBases>
                     </webApp>
+                    <jettyXml>src/main/config/etc/jetty-jmx.xml</jettyXml>
                 </configuration>
             </plugin>
             <plugin>
