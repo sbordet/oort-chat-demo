@@ -18,6 +18,7 @@ package org.cometd.demo.service;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -101,6 +102,7 @@ public class UsersService implements BayeuxServer.SessionListener
             String userId = userInfo.getId();
             logger.debug("{} user '{}'@{}", expired ? "Expired" : "Logged out", userId, session.getId());
             userInfos.removeAndShare(userId);
+            seti.disassociate(userId, session);
             userToSession.remove(userId);
         }
     }
