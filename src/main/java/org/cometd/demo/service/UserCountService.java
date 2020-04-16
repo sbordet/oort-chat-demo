@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import javax.annotation.PreDestroy;
 
 import org.cometd.annotation.Listener;
 import org.cometd.annotation.Service;
+import org.cometd.bayeux.Promise;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ConfigurableServerChannel;
 import org.cometd.bayeux.server.ServerMessage;
@@ -31,34 +32,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link UserCountService} maintains the total number of connected users across the cluster.
- * <p />
- * It makes use of {@link OortLong}, which keeps the number of connected users per node, and
- * then uses {@link OortLong#sum()} to compute the total number of users connected to all nodes.
- * <p />
- * {@link UserCountService} register itself as a {@link BayeuxServer.SessionListener} to be
- * notified when users disconnect.
- * It relies on a message sent by each remote user upon successful login to increase the user
- * count, instead of {@link #sessionAdded(ServerSession,ServerMessage)}, because the session
- * added event is fired too early (see comments there).
+ * <p>{@link UserCountService} maintains the total number of connected users across the cluster.</p>
+ * <p>It makes use of {@link OortLong}, which keeps the number of connected users per node, and
+ * then uses {@link OortLong#sum()} to compute the total number of users connected to all nodes.</p>
+ * <p>{@link UserCountService} register itself as a {@link BayeuxServer.SessionListener} to be
+ * notified when users disconnect.</p>
+ * <p>It relies on a message sent by each remote user upon successful login to increase the user
+ * count, instead of {@link #sessionAdded(ServerSession, ServerMessage)}, because the session
+ * added event is fired too early (see comments there).</p>
  */
 @Service(UserCountService.NAME)
-public class UserCountService implements BayeuxServer.SessionListener
-{
+public class UserCountService implements BayeuxServer.SessionListener {
     public static final String NAME = "user_count";
     private static final String CHANNEL = "/users";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserCountService.class);
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final OortLong counter;
 
-    public UserCountService(Oort oort)
-    {
+    public UserCountService(Oort oort) {
         this.counter = new OortLong(oort, NAME);
     }
 
     @PostConstruct
-    public void construct() throws Exception
-    {
+    public void construct() throws Exception {
         counter.start();
         Oort oort = counter.getOort();
         BayeuxServer bayeuxServer = oort.getBayeuxServer();
@@ -68,8 +64,7 @@ public class UserCountService implements BayeuxServer.SessionListener
     }
 
     @PreDestroy
-    public void destroy() throws Exception
-    {
+    public void destroy() throws Exception {
         Oort oort = counter.getOort();
         oort.deobserveChannel(CHANNEL);
         BayeuxServer bayeuxServer = oort.getBayeuxServer();
@@ -79,8 +74,7 @@ public class UserCountService implements BayeuxServer.SessionListener
     }
 
     @Override
-    public void sessionAdded(ServerSession session, ServerMessage message)
-    {
+    public void sessionAdded(ServerSession session, ServerMessage message) {
         // Connections from other Oort nodes will trigger this callback and
         // cannot be distinguished from remote user sessions.
         // Furthermore, Oort.isOort(session) called from here will return
@@ -93,26 +87,26 @@ public class UserCountService implements BayeuxServer.SessionListener
     }
 
     @Override
-    public void sessionRemoved(ServerSession session, boolean expired)
-    {
+    public void sessionRemoved(ServerSession session, boolean expired) {
         // We want to count only real remote users
-        if (session.isLocalSession() || counter.getOort().isOort(session))
+        if (session.isLocalSession() || counter.getOort().isOort(session)) {
             return;
+        }
         counter.addAndGet(-1);
         broadcastUserCount();
     }
 
     @Listener("/service/init")
-    public void process(final ServerSession remote, ServerMessage message)
-    {
+    public void process(final ServerSession remote, ServerMessage message) {
         counter.addAndGet(1);
         broadcastUserCount();
     }
 
-    private void broadcastUserCount()
-    {
+    private void broadcastUserCount() {
         long result = counter.sum();
-        logger.debug("Broadcasting user count {}", result);
-        counter.getOort().getBayeuxServer().getChannel(CHANNEL).publish(counter.getLocalSession(), result);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Broadcasting user count {}", result);
+        }
+        counter.getOort().getBayeuxServer().getChannel(CHANNEL).publish(counter.getLocalSession(), result, Promise.noop());
     }
 }

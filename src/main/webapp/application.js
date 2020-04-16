@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,15 @@
  */
 
 require({
-        baseUrl: 'jquery',
+        baseUrl: 'js/jquery',
         paths: {
-            jquery: 'jquery-2.1.4',
-            org: '../org'
+            jquery: "https://code.jquery.com/jquery-3.4.1",
+            cometd: '../cometd'
         }
     },
     ['jquery', 'jquery.cometd'],
-    function($, cometd)
-    {
-        $(document).ready(function()
-        {
+    function($, cometd) {
+        $(document).ready(function() {
             var path = location.pathname;
             var contextPath = path.substring(0, path.lastIndexOf('/'));
             var chat = new Chat(contextPath);
@@ -34,8 +32,7 @@ require({
 
             var userField = $('#user-input');
             $('#logon').show();
-            $('#login').on('click', function()
-            {
+            $('#login').on('click', function() {
                 chat.login(userField.val());
             });
             userField.focus();
@@ -44,17 +41,15 @@ require({
             $('#logout').on('click', chat.logout);
 
             var chatField = $('#chat-text');
-            chatField.on('keyup', function(e)
-            {
-                if (e.keyCode === 13)
-                {
+            chatField.on('keyup', function(e) {
+                if (e.keyCode === 13) {
                     chat.sendText(chatField.val());
                     chatField.val('');
                 }
             });
 
             window.onbeforeunload = chat.logout;
-            $(window).unload(chat.logout);
+            $(window).on("unload", chat.logout);
 
             /* Initialize CometD */
             var cometURL = location.protocol + '//' + location.host + contextPath + '/cometd';
@@ -62,13 +57,10 @@ require({
                 url: cometURL,
                 logLevel: 'info'
             });
-            cometd.addListener('/meta/handshake', function(message)
-            {
-                if (message.successful)
-                {
+            cometd.addListener('/meta/handshake', function(message) {
+                if (message.successful) {
                     cometd._info('Logged in user', chat.user);
-                    cometd.batch(function()
-                    {
+                    cometd.batch(function() {
                         cometd.subscribe('/users', chat.onUsers);
                         cometd.subscribe('/rooms', chat.onRooms);
                         cometd.subscribe('/service/room/join', chat.onRoomJoined);
@@ -84,8 +76,7 @@ require({
             });
         });
 
-        function Chat(contextPath)
-        {
+        function Chat(contextPath) {
             var _self = this;
             var _userId;
             var _rooms;
@@ -94,19 +85,15 @@ require({
             var _membersSubscription;
             var _chatSubscription;
 
-            function _uiSetNewRoom()
-            {
+            function _uiSetNewRoom() {
                 $('#rooms-header').empty().append($('<img src="' + contextPath + '/images/add.svg" title="New Room" />')
-                    .on('click', function()
-                    {
+                    .on('click', function() {
                         _self.newRoom();
                     }));
             }
 
-            this.login = function(user)
-            {
-                if (!user)
-                {
+            this.login = function(user) {
+                if (!user) {
                     alert('Please enter a user name');
                     return;
                 }
@@ -130,8 +117,7 @@ require({
                 });
             };
 
-            this.logout = function()
-            {
+            this.logout = function() {
                 cometd.disconnect();
                 cometd._info('Logged out user', _userId);
 
@@ -151,36 +137,28 @@ require({
                 $('#user-input').val('').focus();
             };
 
-            this.resubscribe = function()
-            {
-                if (_membersSubscription)
-                {
+            this.resubscribe = function() {
+                if (_membersSubscription) {
                     _membersSubscription = cometd.resubscribe(_membersSubscription);
                 }
-                if (_chatSubscription)
-                {
+                if (_chatSubscription) {
                     _chatSubscription = cometd.resubscribe(_chatSubscription);
                 }
             };
 
-            function _unsubscribe()
-            {
-                if (_membersSubscription)
-                {
+            function _unsubscribe() {
+                if (_membersSubscription) {
                     cometd.unsubscribe(_membersSubscription);
                     _membersSubscription = undefined;
                 }
-                if (_chatSubscription)
-                {
+                if (_chatSubscription) {
                     cometd.unsubscribe(_chatSubscription);
                     _chatSubscription = undefined;
                 }
             }
 
-            this.joinRoom = function(room)
-            {
-                cometd.batch(this, function()
-                {
+            this.joinRoom = function(room) {
+                cometd.batch(this, function() {
                     _self.leaveRoom();
                     cometd._info('Joining room', room.name);
                     // Subscribe to the members list of this room
@@ -193,13 +171,10 @@ require({
                 });
             };
 
-            this.leaveRoom = function()
-            {
-                if (_room)
-                {
+            this.leaveRoom = function() {
+                if (_room) {
                     $('#chat-text').attr('disabled', true);
-                    cometd.batch(this, function()
-                    {
+                    cometd.batch(this, function() {
                         cometd._info('Leaving room', _room.name);
                         cometd.publish('/service/room/leave', {
                             roomId: _room.id
@@ -210,25 +185,20 @@ require({
                 }
             };
 
-            this.newRoom = function()
-            {
+            this.newRoom = function() {
                 var roomsHeader = $('#rooms-header');
                 roomsHeader.empty()
                     .append($('<input type="text" value="" />'))
-                    .append($('<button type="button">Save</button>').on('click', function()
-                    {
+                    .append($('<button type="button">Save</button>').on('click', function() {
                         _self.createRoom(roomsHeader.find('input:first').val());
                     }))
-                    .append($('<button type="button">Cancel</button>').on('click', function()
-                    {
+                    .append($('<button type="button">Cancel</button>').on('click', function() {
                         _uiSetNewRoom();
                     }));
             };
 
-            this.createRoom = function(roomName)
-            {
-                if (!roomName)
-                {
+            this.createRoom = function(roomName) {
+                if (!roomName) {
                     alert('Please enter a room name');
                     return;
                 }
@@ -238,23 +208,19 @@ require({
                 });
             };
 
-            this.editRoom = function(room)
-            {
+            this.editRoom = function(room) {
                 var roomElement = $('#room-name');
                 roomElement.empty()
                     .append($('<input type="text" value="' + room.name + '" />'))
-                    .append($('<button type="button">Save</button>').on('click', function()
-                    {
+                    .append($('<button type="button">Save</button>').on('click', function() {
                         _self.saveRoom(room, roomElement.find('input:first').val());
                     }))
-                    .append($('<button type="button">Cancel</button>').on('click', function()
-                    {
+                    .append($('<button type="button">Cancel</button>').on('click', function() {
                         _uiSetRoomName(room);
                     }));
             };
 
-            this.saveRoom = function(room, newName)
-            {
+            this.saveRoom = function(room, newName) {
                 cometd._info('Saving room', room.name, '->', newName);
                 cometd.publish('/service/room/edit', {
                     roomId: room.id,
@@ -262,10 +228,8 @@ require({
                 });
             };
 
-            this.sendText = function(text)
-            {
-                if (text)
-                {
+            this.sendText = function(text) {
+                if (text) {
                     $.cometd.publish('/service/chat', {
                         userId: _userId,
                         roomId: _room.id,
@@ -274,14 +238,12 @@ require({
                 }
             };
 
-            function _scrollDown()
-            {
+            function _scrollDown() {
                 var chat = $('#chat-history');
                 chat.scrollTop(chat.prop('scrollHeight') - chat.outerHeight());
             }
 
-            function _uiForChatLine(data)
-            {
+            function _uiForChatLine(data) {
                 return $('' +
                     '<span>' +
                     '    <span class="author">' + data.user.id + ':&nbsp;</span>' +
@@ -290,89 +252,71 @@ require({
                     '<br />')
             }
 
-            this.onChat = function(message)
-            {
+            this.onChat = function(message) {
                 $('#chat-history').append(_uiForChatLine(message.data));
                 _scrollDown();
             };
 
-            this.onChatHistory = function(message)
-            {
+            this.onChatHistory = function(message) {
                 var history = message.data;
                 cometd._info('Chat history', history);
                 var chat = $('#chat-history');
                 chat.empty();
-                $.each(history.chats, function(i, item)
-                {
+                $.each(history.chats, function(i, item) {
                     chat.append(_uiForChatLine(item));
                 });
                 _scrollDown();
             };
 
-            this.onMembers = function(message)
-            {
+            this.onMembers = function(message) {
                 var data = message.data;
                 cometd._info('Members', data);
                 _members = _members || {};
-                if ('join' === data.action)
-                {
-                    $.each(data.members, function(i, member)
-                    {
+                if ('join' === data.action) {
+                    $.each(data.members, function(i, member) {
                         _members[member.id] = member;
                     });
-                }
-                else if ('leave' === data.action)
-                {
-                    $.each(data.members, function(i, member)
-                    {
+                } else if ('leave' === data.action) {
+                    $.each(data.members, function(i, member) {
                         delete _members[member.id];
                     });
                 }
 
-                var memberNames = $.map(_members, function(member, i)
-                {
+                var memberNames = $.map(_members, function(member) {
                     return member.id;
                 });
                 $('#members').empty();
-                $.each(memberNames.sort(), function(i, memberName)
-                {
+                $.each(memberNames.sort(), function(i, memberName) {
                     $('#members').append($('<div><span>' + memberName + '</span></div>'));
                 });
             };
 
-            function _uiSetRoomName(room)
-            {
+            function _uiSetRoomName(room) {
                 $('#room-name')
                     .empty()
                     .append($('<img src="' + contextPath + '/images/edit.svg" title="Edit Room" />')
-                        .click(function()
-                        {
+                        .click(function() {
                             _self.editRoom(room);
                         }))
                     .append($('<span>' + room.name + '</span>'));
             }
 
-            function _imgForSelectedRoom()
-            {
+            function _imgForSelectedRoom() {
                 return $('<img src="' + contextPath + '/images/exit.svg" title="Leave Room" />')
-                    .click(function()
-                    {
+                    .click(function() {
                         _self.leaveRoom();
                     });
             }
 
-            this.onRoomJoined = function(message)
-            {
+            this.onRoomJoined = function(message) {
                 _room = message.data;
                 cometd._info('Room joined', _room);
 
                 _uiSetRoomName(_room);
                 $('#chat-text').removeAttr('disabled').focus();
                 $('#status').text('Joined room \'' + _room.name + '\'');
-                $.each(_rooms, function(i, room)
-                {
-                    if (_room.id == room.id)
-                    {
+                $.each(_rooms, function(i, room) {
+                    if (_room.id === room.id) {
                         var roomElement = $('#room_' + room.id);
                         roomElement.addClass('selected');
                         roomElement.find('img:first').replaceWith(_imgForSelectedRoom());
@@ -380,13 +324,11 @@ require({
                 });
             };
 
-            this.onRoomLeft = function(message)
-            {
+            this.onRoomLeft = function(message) {
                 var room = message.data;
                 cometd._info('Room left', room);
 
-                if (_room.id == room.id)
-                {
+                if (_room.id === room.id) {
                     $('#room-name').text('');
                     $('#members').empty();
                     $('#chat-history').empty();
@@ -394,10 +336,8 @@ require({
                     _room = undefined;
                 }
 
-                $.each(_rooms, function(i, item)
-                {
-                    if (room.id == item.id)
-                    {
+                $.each(_rooms, function(i, item) {
+                    if (room.id === item.id) {
                         var roomElement = $('#room_' + room.id);
                         roomElement.removeClass('selected');
                         roomElement.find('img:first').replaceWith(_imgForNonSelectedRoom(room));
@@ -405,58 +345,47 @@ require({
                 });
             };
 
-            this.onRoomEdit = function(message)
-            {
+            this.onRoomEdit = function(message) {
                 var oldRoom = _room;
                 _room = message.data;
                 cometd._info('Room edited', _room);
 
                 _uiSetRoomName(_room);
                 $('#status').text('Room name \'' + oldRoom.name + '\' => \'' + _room.name + '\'');
-                $.each(_rooms, function(i, room)
-                {
-                    if (_room.id == room.id)
-                    {
+                $.each(_rooms, function(i, room) {
+                    if (_room.id === room.id) {
                         var roomElement = $('#room_' + room.id);
                         roomElement.find('span:first').text(room.name);
                     }
                 });
             };
 
-            this.onRoomCreate = function(message)
-            {
+            this.onRoomCreate = function(message) {
                 var room = message.data;
                 cometd._info('Room created', room);
                 _uiSetNewRoom();
             };
 
-            function _imgForNonSelectedRoom(room)
-            {
+            function _imgForNonSelectedRoom(room) {
                 return $('<img src="' + contextPath + '/images/enter.svg" title="Join Room" />')
-                    .click(function()
-                    {
+                    .click(function() {
                         _self.joinRoom(room);
                     });
             }
 
-            this.onRooms = function(message)
-            {
+            this.onRooms = function(message) {
                 _rooms = message.data;
                 cometd._info('Rooms updated', _rooms);
                 $('#rooms-list').empty();
-                $.each(_rooms, function(i, room)
-                {
+                $.each(_rooms, function(i, room) {
                     var line = $('<div id="room_' + room.id + '"/>');
                     var selected = _room && _room.id === room.id;
-                    if (selected)
-                    {
+                    if (selected) {
                         _room = room;
                         line.addClass('selected');
                         line.append(_imgForSelectedRoom(room));
                         _uiSetRoomName(room);
-                    }
-                    else
-                    {
+                    } else {
                         line.append(_imgForNonSelectedRoom(room));
                     }
                     line.append($('<span>' + room.name + '</span>'));
@@ -464,15 +393,13 @@ require({
                 });
             };
 
-            this.onUsers = function(message)
-            {
+            this.onUsers = function(message) {
                 var count = message.data;
                 cometd._info('Users count updated to', count);
                 $('#user-count').text('Total Users: ' + count);
             };
 
-            this.onStatus = function(message)
-            {
+            this.onStatus = function(message) {
                 $('#status').text(message.data);
             };
         }

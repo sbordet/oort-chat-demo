@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,162 +14,146 @@
  * limitations under the License.
  */
 
-img
-{
+img {
     margin: 0;
     border: 0;
 }
 
-table
-{
+table {
     border: 1px solid navy;
     width: 100%;
     height: 100%;
     border-collapse: collapse;
 }
 
-td
-{
+td {
     border: 1px solid navy;
     text-align: center;
     vertical-align: top;
 }
 
-input
-{
+input {
     width: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
 
-#title
-{
+#title {
     text-align: center;
 }
 
-#console
-{
+#console {
     margin: auto;
     width: 80em;
 }
 
-#rooms-box
-{
+#rooms-box {
     width: 15em;
 }
 
-#rooms-header-box
-{
+#rooms-header-box {
     width: 10em;
     text-align: right;
 }
-#rooms-header
-{
+
+#rooms-header {
 }
-#rooms-header img
-{
+
+#rooms-header img {
     width: 1em;
     cursor: pointer;
     vertical-align: middle;
 }
 
-#rooms-list-box
-{
+#rooms-list-box {
     height: 100%;
     text-align: left;
 }
-#rooms-list .selected
-{
+
+#rooms-list .selected {
     background-color: lightgreen;
 }
-#rooms-list span
-{
+
+#rooms-list span {
     padding: 0 0.2em;
     width: 100%;
 }
-#rooms-list img
-{
+
+#rooms-list img {
     width: 1em;
     cursor: pointer;
 }
 
-#chat-header-box
-{
+#chat-header-box {
     height: 1.2em;
 }
 
-#room-name input
-{
+#room-name input {
     width: 20em;
 }
-#room-name img
-{
+
+#room-name img {
     width: 1em;
     cursor: pointer;
     vertical-align: middle;
 }
 
-#chat-history
-{
+#chat-history {
     text-align: left;
     width: 55em;
     height: 20em;
     overflow: auto;
 }
-#chat-history .author
-{
+
+#chat-history .author {
     font-weight: bold;
 }
 
-#user-box
-{
+#user-box {
     vertical-align: middle;
 }
-#chat-message-box
-{
+
+#chat-message-box {
     height: 1.2em;
 }
-#chat-text-box
-{
+
+#chat-text-box {
     width: 100%;
     padding: 0 0.4em;
     vertical-align: middle;
 }
 
-#message, #logon
-{
+#message, #logon {
     height: 1em;
 }
 
-#user-label-box
-{
+#user-label-box {
     vertical-align: middle;
 }
-#user-input-box
-{
+
+#user-input-box {
     width: 100%;
     padding: 0 0.4em;
     vertical-align: middle;
 }
 
-#members-box
-{
+#members-box {
     width: 10em;
 }
-#members
-{
+
+#members {
 }
-#status-box
-{
+
+#status-box {
     height: 1.2em;
     text-align: left;
 }
-#status-box
-{
+
+#status-box {
     height: 1em;
 }
-#user-count
-{
+
+#user-count {
     border-left: 2px solid navy;
     padding: 0 0.5em;
     text-align: right;

@@ -1,0 +1,18 @@
+<configuration>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %thread [%-5level][%logger{36}] %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+  <logger name="org.eclipse.jetty" level="info" />
+  <logger name="org.cometd" level="info" />
+  <logger name="org.cometd.demo" level="debug" />
+  <logger name="org.cometd.oort" level="info" />
+
+</configuration>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,10 @@
 
 package org.cometd.demo.model;
 
-public enum Membership
-{
+public enum Membership {
     BRONZE, SILVER, GOLD;
 
-    public boolean implies(Membership membership)
-    {
+    public boolean implies(Membership membership) {
         return ordinal() >= membership.ordinal();
     }
 }

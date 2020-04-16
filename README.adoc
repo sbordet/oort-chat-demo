@@ -67,7 +67,6 @@ More rooms may be created at runtime. The creation is handled by a specific serv
 to add the new room and to make sure it's pushed to the client's room list.
 When a room is created in a node and its `RoomInfo` replicated to other nodes, all `RoomsService` instances
 in all nodes receive a "put event" for their `OortMap` of rooms.
-Likewise, they receive a "remove event" when a room is deleted.
 
 When these events are received by `RoomService`, it calls the `RoomMembersService` to create/destroy a member
 list for that room on the current node.
@@ -85,8 +84,7 @@ or leaves a room. Furthermore, it register itself as a listener to `UsersService
 disconnects without explicitly leaving the rooms it joined, `RoomMembersService` can remove the user from
 the rooms it joined.
 
-For any change in the members list of a room, this service broadcasts a message across the cluster that is
-delivered to remote clients via standard Oort features.
+For any change in the members list of a room, this service broadcasts a message across the cluster that is delivered to remote clients via standard Oort features.
 
 ==== `RoomJoinService` & `RoomLeaveService`
 
@@ -95,27 +93,22 @@ They listen for messages from remote clients and perform the action.
 
 As the room may not be local to the node that is performing the join, this service delegates to the
 `RoomsService` to find the `RoomInfo` correspondent to the room the user wants to join.
-Since `RoomsService` maintains the `RoomInfo`s for all rooms in all nodes, the lookup happens locally.
+Since `RoomsService` maintains the ``RoomInfo``s for all rooms in all nodes, the lookup happens locally.
 
-These services communicate with the `RoomMembersService` to notify it that the user joined/left the room
-so that the room's member list can be kept up to date.
+These services communicate with the `RoomMembersService` to notify it that the user joined/left the room so that the room's member list can be kept up to date.
 
 `RoomJoinService` performs a check to see whether the user has the rights to join the room.
-This check can be done locally because both `RoomInfo` and `UserInfo` carry the information
-needed to perform the check.
+This check can be done locally because both `RoomInfo` and `UserInfo` carry the information needed to perform the check.
 
 ==== `RoomCreateService`
 
 This service is responsible for creating new rooms at runtime upon user demand.
 In order to create a room, a unique across the cluster id must be generated.
-`RoomCreateService` uses an `OortMasterLong` as a the id generator; when the unique id is generated and
-sent back to the node that wants to create the room, this service creates the new `RoomInfo` and passes
-it to the `RoomsService` to distribute the new `RoomInfo` across all nodes.
+`RoomCreateService` uses an `OortPrimaryLong` as a the id generator; when the unique id is generated and sent back to the node that wants to create the room, this service creates the new `RoomInfo` and passes it to the `RoomsService` to distribute the new `RoomInfo` across all nodes.
 
 ==== `ChatService`
 
-This service is responsible for handling chat messages from remote clients, and re-broadcast them to all
-nodes, possibly after text modifications or other actions (like warning a user for bad wording in messages).
+This service is responsible for handling chat messages from remote clients, and re-broadcast them to all nodes, possibly after text modifications or other actions (like warning a user for bad wording in messages).
 
 Chat messages are re-broadcast across all nodes using standard Oort features.
 

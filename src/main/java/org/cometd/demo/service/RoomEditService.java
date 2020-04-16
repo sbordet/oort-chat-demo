@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,43 +18,44 @@ package org.cometd.demo.service;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.cometd.annotation.Service;
+import org.cometd.bayeux.Promise;
 import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.demo.model.RoomInfo;
 import org.cometd.demo.model.UserInfo;
 import org.cometd.oort.Oort;
 import org.cometd.oort.OortService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * {@link RoomEditService} performs the actions needed to change the room name and broadcast the change across
- * the cluster.
- * <p />
- * A specific chat room is owned by a particular node, and the {@link RoomInfo} that represents the room is
+ * <p>{@link RoomEditService} performs the actions needed to change the room name and broadcast the change across
+ * the cluster.</p>
+ * <p>A specific chat room is owned by a particular node, and the {@link RoomInfo} that represents the room is
  * distributed in all nodes. Since {@link RoomInfo} are immutable and are owned by a particular node, this
  * service needs to forward the edit action to the node that owns the room being edited, and as such extends
- * {@link OortService}.
- * <p />
- * When the action is executed on the node that owns the room, the {@link RoomInfo} for the room being edited
- * is replaced by a new instance containing the edited name, and the change broadcast to all nodes.
+ * {@link OortService}.</p>
+ * <p>When the action is executed on the node that owns the room, the {@link RoomInfo} for the room being edited
+ * is replaced by a new instance containing the edited name, and the change broadcast to all nodes.</p>
  */
 @Service(RoomEditService.NAME)
-public class RoomEditService extends OortService<RoomInfo, OortService.ServerContext>
-{
+public class RoomEditService extends OortService<RoomInfo, OortService.ServerContext> {
     public static final String NAME = "room_edit";
     private static final String USER_ID = "userId";
     private static final String ROOM_ID = "roomId";
     private static final String ROOM_NAME = "roomName";
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoomEditService.class);
 
     private final UsersService usersService;
     private final RoomsService roomsService;
     private final RoomMembersService membersService;
 
-    public RoomEditService(Oort oort, UsersService usersService, RoomsService roomsService, RoomMembersService membersService)
-    {
+    public RoomEditService(Oort oort, UsersService usersService, RoomsService roomsService, RoomMembersService membersService) {
         super(oort, NAME);
         this.usersService = usersService;
         this.roomsService = roomsService;
@@ -62,98 +63,76 @@ public class RoomEditService extends OortService<RoomInfo, OortService.ServerCon
     }
 
     @PostConstruct
-    public void construct() throws Exception
-    {
+    public void construct() throws Exception {
         start();
     }
 
     @PreDestroy
-    public void destroy() throws Exception
-    {
+    public void destroy() throws Exception {
         stop();
     }
 
     @org.cometd.annotation.Listener("/service/room/edit")
-    public void joinRoom(final ServerSession remote, final ServerMessage message)
-    {
-        logger.debug("Edit room request from {}: {}", remote, message);
+    public void joinRoom(final ServerSession remote, final ServerMessage message) {
+        LOGGER.debug("Edit room request from {}: {}", remote, message);
         Map<String, Object> data = message.getDataAsMap();
         Map<String, Object> actionData = new HashMap<>(data);
         actionData.put(USER_ID, usersService.getUserInfo(remote).getId());
         long roomId = ((Number)data.get(ROOM_ID)).longValue();
         String oortURL = roomsService.findOortURLFor(roomId);
-        if (oortURL != null)
-        {
+        if (oortURL != null) {
             forward(oortURL, actionData, new ServerContext(remote, message));
-        }
-        else
-        {
+        } else {
             editFailed(remote, "Cannot edit room, unknown owner node");
         }
     }
 
     @Override
-    protected Result<RoomInfo> onForward(Request request)
-    {
+    protected Result<RoomInfo> onForward(Request request) {
         Map<String, Object> data = request.getDataAsMap();
         long roomId = ((Number)data.get(ROOM_ID)).longValue();
         RoomInfo roomInfo = roomsService.getRoomInfo(roomId);
-        if (roomInfo != null)
-        {
+        if (roomInfo != null) {
             String userId = (String)data.get(USER_ID);
             UserInfo userInfo = usersService.find(userId);
-            if (userInfo != null)
-            {
+            if (userInfo != null) {
                 // Can only edit if user has joined the room
-                if (membersService.isMember(roomInfo, userInfo))
-                {
+                if (membersService.isMember(roomInfo, userInfo)) {
                     String newName = (String)data.get(ROOM_NAME);
-                    if (newName != null)
-                    {
+                    if (newName != null) {
                         RoomInfo newRoomInfo = new RoomInfo(roomInfo.getId(), newName, roomInfo.getMembership());
                         roomsService.replaceRoomInfo(newRoomInfo);
                         return Result.success(newRoomInfo);
-                    }
-                    else
-                    {
+                    } else {
                         return Result.failure("Cannot edit room, no new room name");
                     }
-                }
-                else
-                {
+                } else {
                     return Result.failure("Cannot edit room, user not member of the room");
                 }
-            }
-            else
-            {
+            } else {
                 return Result.ignore("Cannot edit room, unknown user");
             }
-        }
-        else
-        {
+        } else {
             return Result.ignore("Cannot edit room, unknown room");
         }
     }
 
     @Override
-    protected void onForwardSucceeded(RoomInfo roomInfo, ServerContext context)
-    {
-        logger.debug("Edit room request succeeded");
+    protected void onForwardSucceeded(RoomInfo roomInfo, ServerContext context) {
+        LOGGER.debug("Edit room request succeeded");
         ServerSession session = context.getServerSession();
         UserInfo userInfo = usersService.getUserInfo(session);
-        logger.debug("Delivering room to {}: {}", userInfo, roomInfo);
-        session.deliver(getLocalSession(), context.getServerMessage().getChannel(), roomInfo);
+        LOGGER.debug("Delivering room to {}: {}", userInfo, roomInfo);
+        session.deliver(getLocalSession(), context.getServerMessage().getChannel(), roomInfo, Promise.noop());
         roomsService.broadcastRooms();
     }
 
     @Override
-    protected void onForwardFailed(Object failure, ServerContext context)
-    {
+    protected void onForwardFailed(Object failure, ServerContext context) {
         editFailed(context.getServerSession(), String.valueOf(failure));
     }
 
-    private void editFailed(ServerSession remote, String message)
-    {
-        remote.deliver(getLocalSession(), "/service/status", message);
+    private void editFailed(ServerSession remote, String message) {
+        remote.deliver(getLocalSession(), "/service/status", message, Promise.noop());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,43 +20,36 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChatHistoryInfo
-{
+public class ChatHistoryInfo {
     private final List<ChatInfo> chatInfos = new LinkedList<>();
     private final RoomInfo roomInfo;
     private final int maxEntries;
 
-    public ChatHistoryInfo(RoomInfo roomInfo, int maxEntries)
-    {
+    public ChatHistoryInfo(RoomInfo roomInfo, int maxEntries) {
         this.roomInfo = roomInfo;
         this.maxEntries = maxEntries;
     }
 
-    public RoomInfo getRoomInfo()
-    {
+    public RoomInfo getRoomInfo() {
         return roomInfo;
     }
 
-    public int getMaxEntries()
-    {
+    public int getMaxEntries() {
         return maxEntries;
     }
 
-    public List<ChatInfo> getChatInfos()
-    {
-        synchronized (this)
-        {
+    public List<ChatInfo> getChatInfos() {
+        synchronized (this) {
             return new ArrayList<>(chatInfos);
         }
     }
 
-    public ChatInfo add(ChatInfo chatInfo)
-    {
-        synchronized (this)
-        {
+    public ChatInfo add(ChatInfo chatInfo) {
+        synchronized (this) {
             ChatInfo result = null;
-            if (chatInfos.size() == maxEntries)
+            if (chatInfos.size() == maxEntries) {
                 result = chatInfos.remove(0);
+            }
             chatInfos.add(chatInfo);
             return result;
         }

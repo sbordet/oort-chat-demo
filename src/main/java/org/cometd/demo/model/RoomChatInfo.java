@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,20 @@
 
 package org.cometd.demo.model;
 
-public class RoomChatInfo
-{
+public class RoomChatInfo {
     private final RoomInfo roomInfo;
     private final ChatInfo chatInfo;
 
-    public RoomChatInfo(RoomInfo roomInfo, ChatInfo chatInfo)
-    {
+    public RoomChatInfo(RoomInfo roomInfo, ChatInfo chatInfo) {
         this.roomInfo = roomInfo;
         this.chatInfo = chatInfo;
     }
 
-    public RoomInfo getRoomInfo()
-    {
+    public RoomInfo getRoomInfo() {
         return roomInfo;
     }
 
-    public ChatInfo getChatInfo()
-    {
+    public ChatInfo getChatInfo() {
         return chatInfo;
     }
 }

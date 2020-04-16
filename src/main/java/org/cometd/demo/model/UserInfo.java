@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,45 +16,42 @@
 
 package org.cometd.demo.model;
 
-public class UserInfo
-{
+public class UserInfo {
     private final String id;
     private final Membership membership;
 
-    public UserInfo(String id, Membership membership)
-    {
+    public UserInfo(String id, Membership membership) {
         this.id = id;
         this.membership = membership;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
-    public Membership getMembership()
-    {
+    public Membership getMembership() {
         return membership;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj) return true;
-        if (!(obj instanceof UserInfo)) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof UserInfo)) {
+            return false;
+        }
         UserInfo that = (UserInfo)obj;
         return id.equals(that.id);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return id.hashCode();
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return String.format("%s[%s]", getClass().getSimpleName(), getId());
     }
 }

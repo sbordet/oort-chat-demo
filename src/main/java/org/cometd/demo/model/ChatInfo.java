@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,25 @@
 
 package org.cometd.demo.model;
 
-public class ChatInfo
-{
+public class ChatInfo {
     private final UserInfo userInfo;
     private final String text;
 
-    public ChatInfo(UserInfo userInfo, String text)
-    {
+    public ChatInfo(UserInfo userInfo, String text) {
         this.userInfo = userInfo;
         this.text = text;
     }
 
-    public UserInfo getUserInfo()
-    {
+    public UserInfo getUserInfo() {
         return userInfo;
     }
 
-    public String getText()
-    {
+    public String getText() {
         return text;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return String.format("%s[%s: %s]", getClass().getSimpleName(), getUserInfo(), getText());
     }
 }

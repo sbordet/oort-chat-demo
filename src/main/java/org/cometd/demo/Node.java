@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,14 @@ package org.cometd.demo;
 /**
  * Wrapper for a node id, and possibly other information (like IP address of the node, etc.)
  */
-public class Node
-{
+public class Node {
     private final String id;
 
-    public Node(String id)
-    {
+    public Node(String id) {
         this.id = id;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 }

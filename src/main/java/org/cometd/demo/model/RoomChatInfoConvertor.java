@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,9 @@ import java.util.Map;
 
 import org.eclipse.jetty.util.ajax.JSON;
 
-public class RoomChatInfoConvertor implements JSON.Convertor
-{
+public class RoomChatInfoConvertor implements JSON.Convertor {
     @Override
-    public void toJSON(Object obj, JSON.Output out)
-    {
+    public void toJSON(Object obj, JSON.Output out) {
         RoomChatInfo roomChatInfo = (RoomChatInfo)obj;
         out.addClass(RoomChatInfo.class);
         out.add("room", roomChatInfo.getRoomInfo());
@@ -32,8 +30,7 @@ public class RoomChatInfoConvertor implements JSON.Convertor
     }
 
     @Override
-    public Object fromJSON(Map object)
-    {
+    public Object fromJSON(Map object) {
         RoomInfo roomInfo = (RoomInfo)object.get("room");
         ChatInfo chatInfo = (ChatInfo)object.get("chat");
         return new RoomChatInfo(roomInfo, chatInfo);

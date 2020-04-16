@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,53 +28,53 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link ChatHistoryService} acts as the storage for chat room messages.
- * <p />
- * An instance of this service is present in all nodes, and it stores only the messages for the rooms
- * that are owned by the node.
- * <p />
- * This service does not use any Oort features, it is just wrapper for a map from room id to
+ * <p>{@link ChatHistoryService} acts as the storage for chat room messages.</p>
+ * <p>An instance of this service is present in all nodes, and it stores only the messages for the rooms
+ * that are owned by the node.</p>
+ * <p>This service does not use any Oort features, it is just wrapper for a map from room id to
  * {@link ChatHistoryInfo} instances, to be used by other services like {@link ChatHistoryArchiveService}
- * and {@link ChatHistoryRequestService}.
+ * and {@link ChatHistoryRequestService}.</p>
  */
 @Service(ChatHistoryService.NAME)
-public class ChatHistoryService
-{
+public class ChatHistoryService {
     public static final String NAME = "chat_history";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatHistoryService.class);
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ConcurrentMap<Long, ChatHistoryInfo> roomToHistory = new ConcurrentHashMap<>();
     private final int maxEntries;
 
-    public ChatHistoryService(int maxEntries)
-    {
+    public ChatHistoryService(int maxEntries) {
         this.maxEntries = maxEntries;
     }
 
-    public void archive(RoomChatInfo roomChatInfo)
-    {
+    public void archive(RoomChatInfo roomChatInfo) {
         RoomInfo roomInfo = roomChatInfo.getRoomInfo();
         long roomId = roomInfo.getId();
         ChatHistoryInfo roomHistory = roomToHistory.get(roomId);
-        if (roomHistory == null)
-        {
+        if (roomHistory == null) {
             roomHistory = new ChatHistoryInfo(roomInfo, maxEntries);
             ChatHistoryInfo existing = roomToHistory.putIfAbsent(roomId, roomHistory);
-            if (existing != null)
+            if (existing != null) {
                 roomHistory = existing;
+            }
         }
         ChatInfo chatInfo = roomChatInfo.getChatInfo();
         ChatInfo discarded = roomHistory.add(chatInfo);
-        if (discarded != null)
-            logger.debug("Dearchiving old chat info {}", discarded);
-        logger.debug("Archived chat info {}", chatInfo);
+        if (discarded != null) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Dearchiving old chat info {}", discarded);
+            }
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Archived chat info {}", chatInfo);
+        }
     }
 
-    public ChatHistoryInfo retrieve(RoomInfo roomInfo)
-    {
+    public ChatHistoryInfo retrieve(RoomInfo roomInfo) {
         ChatHistoryInfo roomHistory = roomToHistory.get(roomInfo.getId());
-        if (roomHistory == null)
+        if (roomHistory == null) {
             roomHistory = new ChatHistoryInfo(roomInfo, maxEntries);
+        }
         return roomHistory;
     }
 }

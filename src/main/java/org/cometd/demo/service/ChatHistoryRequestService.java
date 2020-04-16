@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,30 +20,32 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.cometd.annotation.Service;
+import org.cometd.bayeux.Promise;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.demo.model.ChatHistoryInfo;
 import org.cometd.demo.model.RoomInfo;
 import org.cometd.demo.model.UserInfo;
 import org.cometd.oort.Oort;
 import org.cometd.oort.OortService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * {@link ChatHistoryRequestService} is responsible to send the request to retrive the last messages of a
- * chat room to the right node.
- * <p />
- * Chat messages are archived in the node that owns the room by an instance of {@link ChatHistoryService}.
+ * <p>{@link ChatHistoryRequestService} is responsible to send the request to retrive the last messages of a
+ * chat room to the right node.</p>
+ * <p>Chat messages are archived in the node that owns the room by an instance of {@link ChatHistoryService}.</p>
  */
 @Service(ChatHistoryRequestService.NAME)
-public class ChatHistoryRequestService extends OortService<ChatHistoryInfo, OortService.ServerContext>
-{
+public class ChatHistoryRequestService extends OortService<ChatHistoryInfo, OortService.ServerContext> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatHistoryRequestService.class);
+
     public static final String NAME = "chat_history_request";
 
     private final UsersService usersService;
     private final RoomsService roomsService;
     private final ChatHistoryService chatHistoryService;
 
-    public ChatHistoryRequestService(Oort oort, UsersService usersService, RoomsService roomsService, ChatHistoryService chatHistoryService)
-    {
+    public ChatHistoryRequestService(Oort oort, UsersService usersService, RoomsService roomsService, ChatHistoryService chatHistoryService) {
         super(oort, NAME);
         this.usersService = usersService;
         this.roomsService = roomsService;
@@ -51,46 +53,42 @@ public class ChatHistoryRequestService extends OortService<ChatHistoryInfo, Oort
     }
 
     @PostConstruct
-    public void construct() throws Exception
-    {
+    public void construct() throws Exception {
         start();
     }
 
     @PreDestroy
-    public void destroy() throws Exception
-    {
+    public void destroy() throws Exception {
         stop();
     }
 
-    public void deliverChatHistory(ServerSession remote, RoomInfo roomInfo)
-    {
+    public void deliverChatHistory(ServerSession remote, RoomInfo roomInfo) {
         String oortURL = roomsService.findOortURLFor(roomInfo.getId());
-        if (oortURL != null)
+        if (oortURL != null) {
             forward(oortURL, roomInfo, new ServerContext(remote, null));
+        }
     }
 
     @Override
-    protected Result<ChatHistoryInfo> onForward(Request request)
-    {
+    protected Result<ChatHistoryInfo> onForward(Request request) {
         RoomInfo roomInfo = (RoomInfo)request.getData();
         return Result.success(chatHistoryService.retrieve(roomInfo));
     }
 
     @Override
-    protected void onForwardSucceeded(ChatHistoryInfo result, ServerContext context)
-    {
+    protected void onForwardSucceeded(ChatHistoryInfo result, ServerContext context) {
         ServerSession remote = context.getServerSession();
         UserInfo userInfo = usersService.getUserInfo(remote);
-        if (userInfo != null)
-        {
-            logger.debug("Delivering chat history to {}: {}", userInfo, result);
-            remote.deliver(getLocalSession(), "/service/chat", result);
+        if (userInfo != null) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Delivering chat history to {}: {}", userInfo, result);
+            }
+            remote.deliver(getLocalSession(), "/service/chat", result, Promise.noop());
         }
     }
 
     @Override
-    protected void onForwardFailed(Object failure, ServerContext context)
-    {
+    protected void onForwardFailed(Object failure, ServerContext context) {
         // Nothing to do, the user will see an empty chat history on the UI
     }
 }

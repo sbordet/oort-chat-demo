@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.cometd.demo;
 
-import org.cometd.common.JSONContext;
 import org.cometd.demo.model.ChatHistoryInfo;
 import org.cometd.demo.model.ChatHistoryInfoConvertor;
 import org.cometd.demo.model.ChatInfo;
@@ -32,13 +31,11 @@ import org.cometd.server.JettyJSONContextServer;
 import org.eclipse.jetty.util.ajax.JSONEnumConvertor;
 
 /**
- * Customization of {@link JSONContext.Server} to allow transparent replication
+ * Customization of {@link JSONContextServer} to allow transparent replication
  * of {@code *Info} objects across the nodes of the cluster.
  */
-public class JSONContextServer extends JettyJSONContextServer
-{
-    public JSONContextServer()
-    {
+public class JSONContextServer extends JettyJSONContextServer {
+    public JSONContextServer() {
         getJSON().addConvertor(Membership.class, new JSONEnumConvertor(true));
         getJSON().addConvertor(RoomInfo.class, new RoomInfoConvertor());
         getJSON().addConvertor(UserInfo.class, new UserInfoConvertor());

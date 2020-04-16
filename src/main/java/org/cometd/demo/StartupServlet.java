@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+ * Copyright (c) 2013-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@
 package org.cometd.demo;
 
 import java.io.IOException;
+
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.UnavailableException;
 
-import org.cometd.annotation.ServerAnnotationProcessor;
+import org.cometd.annotation.server.ServerAnnotationProcessor;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.demo.service.ChatHistoryArchiveService;
 import org.cometd.demo.service.ChatHistoryRequestService;
@@ -43,13 +44,10 @@ import org.cometd.oort.Seti;
 /**
  * Startup servlet that instantiates and initializes services.
  */
-public class StartupServlet extends GenericServlet
-{
+public class StartupServlet extends GenericServlet {
     @Override
-    public void init() throws ServletException
-    {
-        try
-        {
+    public void init() throws ServletException {
+        try {
             Seti seti = (Seti)getServletContext().getAttribute(Seti.SETI_ATTRIBUTE);
             Oort oort = seti.getOort();
             BayeuxServer bayeuxServer = oort.getBayeuxServer();
@@ -88,16 +86,13 @@ public class StartupServlet extends GenericServlet
             processor.process(roomCreateService);
             ChatService chatService = new ChatService(oort, usersService, roomsService, chatHistoryArchiveService);
             processor.process(chatService);
-        }
-        catch (IOException x)
-        {
+        } catch (IOException x) {
             throw new ServletException(x);
         }
     }
 
     @Override
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException
-    {
+    public void service(ServletRequest req, ServletResponse res) throws ServletException {
         throw new UnavailableException("Configuration Servlet");
     }
 }
