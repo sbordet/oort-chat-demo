@@ -29,9 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.cometd.annotation.Service;
 import org.cometd.annotation.Session;
 import org.cometd.annotation.server.Configure;
@@ -120,7 +119,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
             LOGGER.debug("Sharing Rooms: {}", chatRooms);
         }
         for (RoomInfo roomInfo : chatRooms) {
-            roomInfos.putAndShare(String.valueOf(roomInfo.getId()), roomInfo, null);
+            roomInfos.putAndShare(String.valueOf(roomInfo.id()), roomInfo, null);
         }
         broadcastRooms();
 
@@ -148,21 +147,17 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
     }
 
     public void replaceRoomInfo(RoomInfo roomInfo) {
-        roomInfos.putAndShare(String.valueOf(roomInfo.getId()), roomInfo, null);
+        roomInfos.putAndShare(String.valueOf(roomInfo.id()), roomInfo, null);
     }
 
     public void createRoomInfo(RoomInfo roomInfo) {
-        roomInfos.putAndShare(String.valueOf(roomInfo.getId()), roomInfo, null);
+        roomInfos.putAndShare(String.valueOf(roomInfo.id()), roomInfo, null);
     }
 
     @Override
     public void sessionAdded(ServerSession remote, ServerMessage message) {
         // New user, deliver rooms
         deliverRooms(remote);
-    }
-
-    @Override
-    public void sessionRemoved(ServerSession serverSession, boolean expired) {
     }
 
     @Override
@@ -188,7 +183,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
         if (userInfo != null) {
             Collection<RoomInfo> rooms = roomInfos.merge(OortObjectMergers.concurrentMapUnion()).values();
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Delivering rooms to user '{}': {}", userInfo.getId(), rooms);
+                LOGGER.debug("Delivering rooms to user '{}': {}", userInfo.id(), rooms);
             }
             remote.deliver(session, CHANNEL, rooms, Promise.noop());
         }
@@ -204,7 +199,7 @@ public class RoomsService implements BayeuxServer.SessionListener, OortMap.Entry
 
     @SuppressWarnings("unchecked")
     private List<RoomInfo> loadRooms() throws IOException {
-        String fileName = "rooms-" + node.getId() + ".json";
+        String fileName = "rooms-" + node.id() + ".json";
         InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (stream == null) {
             throw new FileNotFoundException(fileName);

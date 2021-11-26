@@ -16,9 +16,8 @@
 
 package org.cometd.demo.service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.cometd.annotation.Service;
 import org.cometd.demo.model.RoomChatInfo;
 import org.cometd.demo.model.RoomInfo;
@@ -52,10 +51,12 @@ public class ChatHistoryArchiveService extends OortService<Void, Void> {
         stop();
     }
 
-    public void archive(RoomChatInfo roomChatInfo) {
-        RoomInfo roomInfo = roomChatInfo.getRoomInfo();
-        String oortURL = roomsService.findOortURLFor(roomInfo.getId());
-        if (oortURL != null) {
+    public void archive(RoomChatInfo roomChatInfo)
+    {
+        RoomInfo roomInfo = roomChatInfo.roomInfo();
+        String oortURL = roomsService.findOortURLFor(roomInfo.id());
+        if (oortURL != null)
+        {
             forward(oortURL, roomChatInfo, null);
         }
     }

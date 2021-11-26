@@ -48,17 +48,19 @@ public class ChatHistoryService {
     }
 
     public void archive(RoomChatInfo roomChatInfo) {
-        RoomInfo roomInfo = roomChatInfo.getRoomInfo();
-        long roomId = roomInfo.getId();
+        RoomInfo roomInfo = roomChatInfo.roomInfo();
+        long roomId = roomInfo.id();
         ChatHistoryInfo roomHistory = roomToHistory.get(roomId);
-        if (roomHistory == null) {
+        if (roomHistory == null)
+        {
             roomHistory = new ChatHistoryInfo(roomInfo, maxEntries);
             ChatHistoryInfo existing = roomToHistory.putIfAbsent(roomId, roomHistory);
-            if (existing != null) {
+            if (existing != null)
+            {
                 roomHistory = existing;
             }
         }
-        ChatInfo chatInfo = roomChatInfo.getChatInfo();
+        ChatInfo chatInfo = roomChatInfo.chatInfo();
         ChatInfo discarded = roomHistory.add(chatInfo);
         if (discarded != null) {
             if (LOGGER.isDebugEnabled()) {
@@ -71,7 +73,7 @@ public class ChatHistoryService {
     }
 
     public ChatHistoryInfo retrieve(RoomInfo roomInfo) {
-        ChatHistoryInfo roomHistory = roomToHistory.get(roomInfo.getId());
+        ChatHistoryInfo roomHistory = roomToHistory.get(roomInfo.id());
         if (roomHistory == null) {
             roomHistory = new ChatHistoryInfo(roomInfo, maxEntries);
         }

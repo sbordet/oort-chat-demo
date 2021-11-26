@@ -16,20 +16,6 @@
 
 package org.cometd.demo.model;
 
-public class RoomChatInfo {
-    private final RoomInfo roomInfo;
-    private final ChatInfo chatInfo;
-
-    public RoomChatInfo(RoomInfo roomInfo, ChatInfo chatInfo) {
-        this.roomInfo = roomInfo;
-        this.chatInfo = chatInfo;
-    }
-
-    public RoomInfo getRoomInfo() {
-        return roomInfo;
-    }
-
-    public ChatInfo getChatInfo() {
-        return chatInfo;
-    }
+public record RoomChatInfo(RoomInfo roomInfo, ChatInfo chatInfo)
+{
 }

@@ -19,9 +19,8 @@ package org.cometd.demo.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.Promise;
 import org.cometd.bayeux.server.ServerMessage;
@@ -77,7 +76,7 @@ public class RoomEditService extends OortService<RoomInfo, OortService.ServerCon
         LOGGER.debug("Edit room request from {}: {}", remote, message);
         Map<String, Object> data = message.getDataAsMap();
         Map<String, Object> actionData = new HashMap<>(data);
-        actionData.put(USER_ID, usersService.getUserInfo(remote).getId());
+        actionData.put(USER_ID, usersService.getUserInfo(remote).id());
         long roomId = ((Number)data.get(ROOM_ID)).longValue();
         String oortURL = roomsService.findOortURLFor(roomId);
         if (oortURL != null) {
@@ -100,7 +99,7 @@ public class RoomEditService extends OortService<RoomInfo, OortService.ServerCon
                 if (membersService.isMember(roomInfo, userInfo)) {
                     String newName = (String)data.get(ROOM_NAME);
                     if (newName != null) {
-                        RoomInfo newRoomInfo = new RoomInfo(roomInfo.getId(), newName, roomInfo.getMembership());
+                        RoomInfo newRoomInfo = new RoomInfo(roomInfo.id(), newName, roomInfo.membership());
                         roomsService.replaceRoomInfo(newRoomInfo);
                         return Result.success(newRoomInfo);
                     } else {

@@ -78,17 +78,23 @@ public class RoomJoinService {
             UserInfo userInfo = usersService.getUserInfo(remote);
             if (userInfo != null) {
                 // Can only join if membership allows it
-                if (roomInfo.getMembership().implies(userInfo.getMembership())) {
-                    membersService.join(roomInfo, userInfo, result -> {
-                        if (result) {
-                            if (LOGGER.isDebugEnabled()) {
+                if (roomInfo.membership().implies(userInfo.membership()))
+                {
+                    membersService.join(roomInfo, userInfo, result ->
+                    {
+                        if (result)
+                        {
+                            if (LOGGER.isDebugEnabled())
+                            {
                                 LOGGER.debug("Join room request succeeded");
                                 LOGGER.debug("Delivering room to {}: {}", userInfo, roomInfo);
                             }
                             remote.deliver(session, message.getChannel(), roomInfo, Promise.noop());
                             membersService.deliverMembers(remote, userInfo, roomInfo);
                             historyService.deliverChatHistory(remote, roomInfo);
-                        } else {
+                        }
+                        else
+                        {
                             joinFailed(remote, "Cannot join room, no members for room " + roomInfo);
                         }
                     });

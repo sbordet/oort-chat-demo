@@ -21,9 +21,8 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.cometd.annotation.Listener;
 import org.cometd.annotation.Service;
 import org.cometd.annotation.Session;
@@ -61,7 +60,7 @@ public class RoomCreateService {
         String name = "room_ids";
         boolean master = false;
         long initial = 0;
-        InputStream input = getClass().getClassLoader().getResourceAsStream(name + "-" + node.getId() + ".properties");
+        InputStream input = getClass().getClassLoader().getResourceAsStream(name + "-" + node.id() + ".properties");
         if (input != null) {
             try (InputStream stream = input) {
                 Properties properties = new Properties();

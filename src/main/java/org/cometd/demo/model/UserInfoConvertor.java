@@ -25,8 +25,8 @@ public class UserInfoConvertor implements JSON.Convertor {
     public void toJSON(Object obj, JSON.Output out) {
         UserInfo userInfo = (UserInfo)obj;
         out.addClass(UserInfo.class);
-        out.add("id", userInfo.getId());
-        out.add("membership", userInfo.getMembership());
+        out.add("id", userInfo.id());
+        out.add("membership", userInfo.membership());
     }
 
     @Override

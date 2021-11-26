@@ -16,42 +16,21 @@
 
 package org.cometd.demo.model;
 
-public class UserInfo {
-    private final String id;
-    private final Membership membership;
-
-    public UserInfo(String id, Membership membership) {
-        this.id = id;
-        this.membership = membership;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public Membership getMembership() {
-        return membership;
-    }
-
+public record UserInfo(String id, Membership membership)
+{
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof UserInfo)) {
-            return false;
-        }
-        UserInfo that = (UserInfo)obj;
-        return id.equals(that.id);
+        if (obj instanceof UserInfo that)
+            return id.equals(that.id);
+        return false;
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return id.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s[%s]", getClass().getSimpleName(), getId());
     }
 }

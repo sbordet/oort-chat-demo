@@ -16,25 +16,6 @@
 
 package org.cometd.demo.model;
 
-public class ChatInfo {
-    private final UserInfo userInfo;
-    private final String text;
-
-    public ChatInfo(UserInfo userInfo, String text) {
-        this.userInfo = userInfo;
-        this.text = text;
-    }
-
-    public UserInfo getUserInfo() {
-        return userInfo;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s[%s: %s]", getClass().getSimpleName(), getUserInfo(), getText());
-    }
+public record ChatInfo(UserInfo userInfo, String text)
+{
 }

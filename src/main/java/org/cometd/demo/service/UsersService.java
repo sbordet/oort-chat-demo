@@ -19,9 +19,8 @@ package org.cometd.demo.service;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ServerMessage;
@@ -72,7 +71,7 @@ public class UsersService implements BayeuxServer.SessionListener {
     public void sessionAdded(ServerSession session, ServerMessage message) {
         UserInfo userInfo = (UserInfo)session.getAttribute(USER_INFO);
         if (userInfo != null) {
-            String userId = userInfo.getId();
+            String userId = userInfo.id();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Logged in user '{}'@{}", userId, session.getId());
             }
@@ -87,11 +86,14 @@ public class UsersService implements BayeuxServer.SessionListener {
     }
 
     @Override
-    public void sessionRemoved(ServerSession session, boolean expired) {
+    public void sessionRemoved(ServerSession session, ServerMessage message, boolean expired)
+    {
         UserInfo userInfo = (UserInfo)session.getAttribute(USER_INFO);
-        if (userInfo != null) {
-            String userId = userInfo.getId();
-            if (LOGGER.isDebugEnabled()) {
+        if (userInfo != null)
+        {
+            String userId = userInfo.id();
+            if (LOGGER.isDebugEnabled())
+            {
                 LOGGER.debug("{} user '{}'@{}", expired ? "Expired" : "Logged out", userId, session.getId());
             }
             userInfos.removeAndShare(userId, null);

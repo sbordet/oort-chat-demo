@@ -19,14 +19,6 @@ package org.cometd.demo;
 /**
  * Wrapper for a node id, and possibly other information (like IP address of the node, etc.)
  */
-public class Node {
-    private final String id;
-
-    public Node(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
+public record Node(String id)
+{
 }

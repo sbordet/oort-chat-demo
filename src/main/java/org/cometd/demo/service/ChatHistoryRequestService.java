@@ -16,9 +16,8 @@
 
 package org.cometd.demo.service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.Promise;
 import org.cometd.bayeux.server.ServerSession;
@@ -63,7 +62,7 @@ public class ChatHistoryRequestService extends OortService<ChatHistoryInfo, Oort
     }
 
     public void deliverChatHistory(ServerSession remote, RoomInfo roomInfo) {
-        String oortURL = roomsService.findOortURLFor(roomInfo.getId());
+        String oortURL = roomsService.findOortURLFor(roomInfo.id());
         if (oortURL != null) {
             forward(oortURL, roomInfo, new ServerContext(remote, null));
         }

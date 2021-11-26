@@ -16,48 +16,21 @@
 
 package org.cometd.demo.model;
 
-public class RoomInfo {
-    private final long id;
-    private final String name;
-    private final Membership membership;
-
-    public RoomInfo(long id, String name, Membership membership) {
-        this.id = id;
-        this.name = name;
-        this.membership = membership;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Membership getMembership() {
-        return membership;
-    }
-
+public record RoomInfo(long id, String name, Membership membership)
+{
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof RoomInfo)) {
-            return false;
-        }
-        RoomInfo that = (RoomInfo)obj;
-        return id == that.id;
+        if (obj instanceof RoomInfo that)
+            return id == that.id;
+        return false;
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return (int)id;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s[%d/%s]", getClass().getSimpleName(), getId(), getName());
     }
 }

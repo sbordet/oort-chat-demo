@@ -25,8 +25,8 @@ public class ChatInfoConvertor implements JSON.Convertor {
     public void toJSON(Object obj, JSON.Output out) {
         ChatInfo chatInfo = (ChatInfo)obj;
         out.addClass(ChatInfo.class);
-        out.add("user", chatInfo.getUserInfo());
-        out.add("text", chatInfo.getText());
+        out.add("user", chatInfo.userInfo());
+        out.add("text", chatInfo.text());
     }
 
     @Override

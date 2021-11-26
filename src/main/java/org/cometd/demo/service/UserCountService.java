@@ -16,9 +16,8 @@
 
 package org.cometd.demo.service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.cometd.annotation.Listener;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.Promise;
@@ -87,9 +86,11 @@ public class UserCountService implements BayeuxServer.SessionListener {
     }
 
     @Override
-    public void sessionRemoved(ServerSession session, boolean expired) {
+    public void sessionRemoved(ServerSession session, ServerMessage message, boolean expired)
+    {
         // We want to count only real remote users
-        if (session.isLocalSession() || counter.getOort().isOort(session)) {
+        if (session.isLocalSession() || counter.getOort().isOort(session))
+        {
             return;
         }
         counter.addAndGet(-1);

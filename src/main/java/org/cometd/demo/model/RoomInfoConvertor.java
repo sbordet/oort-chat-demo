@@ -25,9 +25,9 @@ public class RoomInfoConvertor implements JSON.Convertor {
     public void toJSON(Object obj, JSON.Output out) {
         RoomInfo roomInfo = (RoomInfo)obj;
         out.addClass(RoomInfo.class);
-        out.add("id", roomInfo.getId());
-        out.add("name", roomInfo.getName());
-        out.add("membership", roomInfo.getMembership());
+        out.add("id", roomInfo.id());
+        out.add("name", roomInfo.name());
+        out.add("membership", roomInfo.membership());
     }
 
     @Override

@@ -24,9 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.cometd.annotation.Service;
 import org.cometd.annotation.Session;
 import org.cometd.bayeux.Promise;
@@ -91,15 +90,13 @@ public class RoomMembersService implements BayeuxServer.SessionListener {
     }
 
     @Override
-    public void sessionAdded(ServerSession session, ServerMessage message) {
-        // Nothing to do
-    }
-
-    @Override
-    public void sessionRemoved(ServerSession session, boolean expired) {
+    public void sessionRemoved(ServerSession session, ServerMessage message, boolean timeout)
+    {
         UserInfo userInfo = usersService.getUserInfo(session);
-        if (userInfo != null) {
-            for (Map.Entry<RoomInfo, OortList<UserInfo>> roomMembers : roomToMembers.entrySet()) {
+        if (userInfo != null)
+        {
+            for (Map.Entry<RoomInfo, OortList<UserInfo>> roomMembers : roomToMembers.entrySet())
+            {
                 leave(roomMembers.getValue(), roomMembers.getKey(), userInfo);
             }
         }
@@ -144,7 +141,7 @@ public class RoomMembersService implements BayeuxServer.SessionListener {
     }
 
     public void roomAdded(RoomInfo roomInfo) {
-        String name = "members_room_" + roomInfo.getId();
+        String name = "members_room_" + roomInfo.id();
         OortList<UserInfo> roomMembers = new OortList<>(oort, name, OortObjectFactories.forConcurrentList());
         if (roomToMembers.putIfAbsent(roomInfo, roomMembers) == null) {
             oort.getBayeuxServer().createChannelIfAbsent(getChannel(roomInfo), new ConfigurableServerChannel.Initializer.Persistent());
@@ -183,7 +180,7 @@ public class RoomMembersService implements BayeuxServer.SessionListener {
     }
 
     private String getChannel(RoomInfo roomInfo) {
-        return "/members/" + roomInfo.getId();
+        return "/members/" + roomInfo.id();
     }
 
     private void broadcastMembers(RoomInfo roomInfo, UserInfo userInfo, String action) {
