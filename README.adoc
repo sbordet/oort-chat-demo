@@ -1,3 +1,5 @@
+![GitHub CI](https://github.com/sbordet/oort-chat-demo/workflows/GitHub%20CI/badge.svg)
+
 == Distributed Oort Chat Demo
 
 This is an implementation of a chat application distributed over multiple nodes based on http://cometd.org[CometD]
