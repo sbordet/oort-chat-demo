@@ -1,4 +1,5 @@
-[![GitHub CI](https://github.com/sbordet/oort-chat-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/sbordet/oort-chat-demo/actions/workflows/ci.yml)
+[link=https://github.com/sbordet/oort-chat-demo/actions/workflows/ci.yml]
+image::https://github.com/sbordet/oort-chat-demo/actions/workflows/ci.yml/badge.svg[]
 
 == Distributed Oort Chat Demo
 
