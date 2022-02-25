@@ -1,4 +1,4 @@
-![GitHub CI](https://github.com/sbordet/oort-chat-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/sbordet/oort-chat-demo/actions/workflows/ci.yml)
+[![GitHub CI](https://github.com/sbordet/oort-chat-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/sbordet/oort-chat-demo/actions/workflows/ci.yml)
 
 == Distributed Oort Chat Demo
 
