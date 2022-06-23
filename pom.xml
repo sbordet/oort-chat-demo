@@ -41,7 +41,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty-version>11.0.8</jetty-version>
+    <jetty-version>11.0.11</jetty-version>
     <cometd-version>7.0.6</cometd-version>
     <slf4j-version>2.0.0-alpha5</slf4j-version>
     <oort-url>http://localhost:${port}/cometd</oort-url>
